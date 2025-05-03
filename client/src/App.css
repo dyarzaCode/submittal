@@ -36,3 +36,18 @@
     transform: rotate(360deg);
   }
 }
+
+table {
+  border-collapse: collapse; /* Ensures borders don't double up */
+  width: 80%; /* Optional: Makes the table take up the full width */
+}
+
+th, td {
+  border: 1px solid #ccc; /* Adds a light gray border to cells */
+  padding: 8px; /* Adds some padding inside cells */
+  text-align: left; /* Aligns text to the left */
+}
+
+th {
+  background-color: #f4f4f4; /* Optional: Adds a light background to headers */
+}

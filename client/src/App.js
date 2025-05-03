@@ -137,19 +137,19 @@ function App() {
       <form onSubmit={handleAddItem}>
         <input
           type="text"
-          placeholder="Field 1"
+          placeholder="Manufacturer"
           value={formData.field1}
           onChange={(e) => setFormData({ ...formData, field1: e.target.value })}
         />
         <input
           type="text"
-          placeholder="Field 2"
+          placeholder="Type"
           value={formData.field2}
           onChange={(e) => setFormData({ ...formData, field2: e.target.value })}
         />
         <input
           type="text"
-          placeholder="Field 3"
+          placeholder="Description"
           value={formData.field3}
           onChange={(e) => setFormData({ ...formData, field3: e.target.value })}
         />
