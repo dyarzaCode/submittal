@@ -82,5 +82,5 @@ th {
 /* Make sure the table container allows horizontal scrolling if needed */
 .table-container {
   overflow-x: auto;
-  margin: 20px 0;
+  margin: 20px 8%;
 }
