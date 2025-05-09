@@ -30,7 +30,12 @@ pool.query('SELECT NOW()', (err, res) => {
 // Routes
 app.get('/api/items', async (req, res) => {
   try {
-    const { rows } = await pool.query('SELECT * FROM items');
+    const { rows } = await pool.query(`
+      SELECT 
+        *,
+        (column4 - (COALESCE(lead_time_weeks, 0) * INTERVAL '1 week'))::date as submit_by_date 
+      FROM items
+    `);
     res.json(rows);
   } catch (err) {
     console.error(err.message);
@@ -42,15 +47,35 @@ app.get('/api/items', async (req, res) => {
 app.post('/api/items', async (req, res) => {
   try {
     console.log('Request body:', req.body); // Log the incoming request body
-    const { field1, field2, field3 } = req.body;
+    const { column1, column2, column3, column4, lead_time_weeks } = req.body;
     const newItem = await pool.query(
-      'INSERT INTO items (field1, field2, field3) VALUES ($1, $2, $3) RETURNING *',
-      [field1, field2, field3]
+      'INSERT INTO items (column1, column2, column3, column4, lead_time_weeks) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+      [column1, column2, column3, column4, lead_time_weeks]
     );
     console.log('Inserted item:', newItem.rows[0]); // Log the inserted item
     res.json(newItem.rows[0]);
   } catch (err) {
     console.error('Error in POST /api/items:', err); // Log the full error object
+    res.status(500).send('Server error');
+  }
+});
+
+app.put('/api/items/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { column1, column2, column3, column4, lead_time_weeks } = req.body;
+    const updatedItem = await pool.query(
+      'UPDATE items SET column1 = $1, column2 = $2, column3 = $3, column4 = $4, lead_time_weeks = $5 WHERE id = $6 RETURNING *',
+      [column1, column2, column3, column4, lead_time_weeks, id]
+    );
+    
+    if (updatedItem.rows.length === 0) {
+      return res.status(404).json({ message: 'Item not found' });
+    }
+    
+    res.json(updatedItem.rows[0]);
+  } catch (err) {
+    console.error('Error in PUT /api/items/:id:', err);
     res.status(500).send('Server error');
   }
 });

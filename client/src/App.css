@@ -84,3 +84,20 @@ th {
   overflow-x: auto;
   margin: 20px 8%;
 }
+
+.table-container tr.urgent {
+  background-color: #ffecb3;  /* light yellow */
+}
+
+.table-container tr.overdue {
+  background-color: #ffcdd2;  /* light red */
+}
+
+/* Make sure the background color shows even on hover */
+.table-container tr.urgent:hover {
+  background-color: #ffe082;  /* slightly darker yellow */
+}
+
+.table-container tr.overdue:hover {
+  background-color: #ef9a9a;  /* slightly darker red */
+}
