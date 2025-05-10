@@ -16,10 +16,21 @@ function App() {
   const [sorting, setSorting] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({});
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     fetchItems();
+    fetchCategories();
   }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/categories');
+      setCategories(response.data);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
 
   const fetchItems = async () => {
     try {
@@ -34,9 +45,10 @@ function App() {
     e.preventDefault();
     console.log('Sending form data:', formData);
     try {
-      const response = await axios.post('http://localhost:5000/api/items', formData);
-      console.log('Response from server:', response.data);
-      setItems([...items, response.data]);
+      await axios.post('http://localhost:5000/api/items', formData);
+      // Fetch fresh data to get calculated fields
+      const response = await axios.get('http://localhost:5000/api/items');
+      setItems(response.data);
       setFormData({ column1: '', column2: '', column3: '', column4: '', lead_time_weeks: '' });
     } catch (error) {
       console.error('Error adding item:', error);
@@ -119,11 +131,17 @@ function App() {
         const rowId = info.row.original.id;
         const value = info.getValue();
         return editingId === rowId ? (
-          <input
-            type="text"
+          <select
             value={editData.column2 || ''}
             onChange={(e) => setEditData({ ...editData, column2: e.target.value })}
-          />
+          >
+            <option value="">Select a type...</option>
+            {categories.map(cat => (
+              <option key={cat.category} value={cat.category}>
+                {cat.category}
+              </option>
+            ))}
+          </select>
         ) : (
           <div style={{ textAlign: 'left' }}>{value}</div>
         );
@@ -272,12 +290,17 @@ function App() {
           value={formData.column1}
           onChange={(e) => setFormData({ ...formData, column1: e.target.value })}
         />
-        <input
-          type="text"
-          placeholder="Type"
+        <select
           value={formData.column2}
           onChange={(e) => setFormData({ ...formData, column2: e.target.value })}
-        />
+        >
+          <option value="">Select a type...</option>
+          {categories.map(cat => (
+            <option key={cat.category} value={cat.category}>
+              {cat.category}
+            </option>
+          ))}
+        </select>
         <input
           type="text"
           placeholder="Description"

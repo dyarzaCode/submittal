@@ -43,6 +43,16 @@ app.get('/api/items', async (req, res) => {
   }
 });
 
+app.get('/api/categories', async (req, res) => {
+  try {
+    const { rows } = await pool.query('SELECT category FROM categories');
+    res.json(rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
 // Enhanced error logging for POST /api/items
 app.post('/api/items', async (req, res) => {
   try {
